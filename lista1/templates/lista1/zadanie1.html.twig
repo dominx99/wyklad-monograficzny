@@ -1,0 +1,123 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Zadanie1 | Lista 1 | Wykład monograficzny
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+                <h2>Zadanie 1</h2>
+                <form id="form">
+                    N(
+                    <input type="number" value="1" style="width: 50px" id="mean">,
+                    <input type="number" value="2" style="width: 50px; margin-bottom: 1rem;" id="standardDeviation">
+                    )
+                    <div class="row mb-3">
+                        <div class="form-check col-md-3">
+                            <input class="form-check-input" type="radio" id="gridCheck1" name="type" value="more">
+                            <label class="form-check-label" for="gridCheck1">
+                                większe niż
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" name="type" id="more-value1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="form-check col-md-3">
+                            <input class="form-check-input" type="radio" id="gridCheck2" name="type" value="less">
+                            <label class="form-check-label" for="gridCheck2">
+                                mniejsze niż
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="less-value1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="form-check col-md-3">
+                            <input class="form-check-input" type="radio" id="gridCheck3" name="type" value="between">
+                            <label class="form-check-label" for="gridCheck3">
+                                pomiędzy
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="between-value1">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="between-value2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="form-check col-md-3">
+                            <input class="form-check-input" type="radio" id="gridCheck4" name="type" value="outside">
+                            <label class="form-check-label" for="gridCheck4">
+                                na zewnątrz
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="outside-value1">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="outside-value2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="form-check col-md-3">
+                            <input class="form-check-input" type="radio" id="gridCheck5" name="type" value="sigma3">
+                            <label class="form-check-label" for="gridCheck5">
+                                reguła 3 sigma
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="sigma3-value1" placeholder="a">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="submit-button" class="btn btn-primary" type="button">Oblicz</button>
+                </form>
+
+                <div class="row d-none mt-3" id="result-card">
+                    <div class="col-md-12">
+                        <h4 class="alert alert-success" id="result"></h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Wyniki: </h3>
+                        <p>dla N(1, 2), P(X &gt; 0) &#61; <span id="result1"></span></p>
+                        <p>dla N(1, 2), P(-1 &lt; X &lt; 2) &#61; <span id="result2"></span></p>
+                        <p>dla N(1, 2), P(X &lt; 3) &#61; <span id="result3"></span></p>
+                        <p>dla N(1, 2), P(|X -1| &gt; 2) &#61; <span id="result4"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('js/1.js') }}"></script>
+{% endblock %}

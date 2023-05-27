@@ -1,0 +1,56 @@
+version: "3"
+services:
+  recipes_php:
+    build:
+      context: ./
+      target: php
+      dockerfile: ./docker/php/Dockerfile-prod
+    image: ghcr.io/dominx99/recipes-php
+    working_dir: /application
+    depends_on:
+      - recipes_db
+    networks:
+      proxy:
+        ipv4_address: 10.200.18.2
+
+  recipes_nginx:
+    build:
+      context: ./
+      target: nginx
+      dockerfile: ./docker/php/Dockerfile-prod
+    image: ghcr.io/dominx99/recipes-nginx
+    depends_on:
+      - recipes_php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.recipes_backend.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.recipes_backend.tls.certresolver=lets_encrypt_resolver"
+    networks:
+      proxy:
+        ipv4_address: 10.200.18.3
+
+  recipes_db:
+    image: mysql:8.0.31
+    volumes:
+      - ./../data/recipes/mysql:/var/lib/mysql
+    env_file:
+      - database.env
+    networks:
+      proxy:
+        ipv4_address: 10.200.18.4
+
+  redis:
+    image: redis:6.2.5
+    command: redis-server
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      proxy:
+        ipv4_address: 10.200.18.5
+
+networks:
+  proxy:
+    external: true
