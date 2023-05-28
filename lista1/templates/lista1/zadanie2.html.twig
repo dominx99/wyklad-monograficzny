@@ -1,0 +1,32 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Zadanie 2</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div>
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Wyznacz histogram</button>
+                </form>
+
+                <div class="row d-none mt-3" id="result-card">
+                    <div class="col-md-12">
+                        <h4 class="alert alert-success" id="result"></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <canvas id="canvas" style="width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/2.js') }}"></script>
+{% endblock %}
