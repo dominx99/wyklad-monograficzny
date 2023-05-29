@@ -1,9 +1,10 @@
-document.querySelector('#submit-button').addEventListener('click', function (e) {
+var chart = null;
+
+document.querySelector('#submit-button').addEventListener('click', function(e) {
     e.preventDefault();
 
     const form = document.querySelector('#form');
     const type = form.type.value;
-    console.log('type', type);
     var values = [
         document.querySelector(`#${type}-value1`).value
     ];
@@ -22,10 +23,15 @@ document.querySelector('#submit-button').addEventListener('click', function (e) 
     fetch('/lista1/zadanie1/oblicz', {
         body: JSON.stringify(data),
         method: 'POST',
-    }).then(function (response) {
-        response.json().then(function (data) {
+    }).then(function(response) {
+        response.json().then(function(data) {
+            console.log('render');
+
             document.querySelector('#result').innerHTML = 'Wynik to: ' + data.probability;
             document.querySelector('#result-card').classList.remove('d-none');
+
+            destroyChart();
+            renderChart(data.meta);
         });
     })
 })
@@ -58,16 +64,64 @@ function results() {
         },
     ];
 
-    datasets.forEach(function (dataset, index) {
+    datasets.forEach(function(dataset, index) {
         fetch('/lista1/zadanie1/oblicz', {
             body: JSON.stringify(dataset),
             method: 'POST',
-        }).then(function (response) {
-            response.json().then(function (data) {
+        }).then(function(response) {
+            response.json().then(function(data) {
                 document.querySelector(`#result${index + 1}`).innerHTML = data.probability;
             });
         })
     })
+}
+
+function destroyChart() {
+    if (chart !== null) {
+        chart.destroy();
+    }
+}
+
+function renderChart(meta) {
+    console.log(meta);
+    var ctx = document.getElementById('chart').getContext('2d');
+    const labels = meta.probabilityDensityFunction.map(value => value.x);
+    const probabilityDensityFunction = meta.probabilityDensityFunction.map(value => value.y);
+    const probability = meta.probability.map(value => value.y);
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: `N(${meta.mean}, ${meta.standardDeviation})`,
+                    data: probabilityDensityFunction,
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    fill: false
+                },
+                {
+                    label: `N(${meta.mean}, ${meta.standardDeviation})`,
+                    data: probability,
+                    backgroundColor: '#A020F0',
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                colorschemes: {
+                    scheme: 'tableau.ClassicMedium10'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 if (document.readyState !== 'loading') {

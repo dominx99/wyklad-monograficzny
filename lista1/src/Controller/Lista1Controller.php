@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Service\HistogramCalculator;
 use App\Service\NormalDistributionCalculator;
+use App\Service\NormalDistributionChartProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ final class Lista1Controller extends AbstractController
 {
     public function __construct(
         private readonly NormalDistributionCalculator $normalDistributionCalculator,
+        private readonly NormalDistributionChartProvider $normalDistributionChartProvider,
         private readonly HistogramCalculator $histogramCalculator,
     ) {
     }
@@ -46,8 +48,17 @@ final class Lista1Controller extends AbstractController
             $values,
         );
 
+        $metadata = $this->normalDistributionChartProvider->provide(
+            (float) $body['mean'],
+            (float) $body['standardDeviation'],
+            $body['operator'],
+            0.1,
+            $values,
+        );
+
         return new JsonResponse([
             'probability' => $probability,
+            'meta' => $metadata,
         ]);
     }
 
