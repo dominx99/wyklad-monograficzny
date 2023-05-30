@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\EmpiricalDistributionChartProvider;
 use App\Service\HistogramCalculator;
 use App\Service\NormalDistributionCalculator;
 use App\Service\NormalDistributionChartProvider;
+use App\Service\UniformDistributionChartProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +21,8 @@ final class Lista1Controller extends AbstractController
         private readonly NormalDistributionCalculator $normalDistributionCalculator,
         private readonly NormalDistributionChartProvider $normalDistributionChartProvider,
         private readonly HistogramCalculator $histogramCalculator,
+        private readonly EmpiricalDistributionChartProvider $empiricalDistributionChartProvider,
+        private readonly UniformDistributionChartProvider $uniformDistributionChartProvider,
     ) {
     }
 
@@ -32,6 +36,12 @@ final class Lista1Controller extends AbstractController
     public function zadanie2(): Response
     {
         return $this->render('lista1/zadanie2.html.twig');
+    }
+
+    #[Route('/lista1/zadanie3')]
+    public function zadanie3(): Response
+    {
+        return $this->render('lista1/zadanie3.html.twig');
     }
 
     #[Route('/lista1/zadanie1/oblicz')]
@@ -73,6 +83,22 @@ final class Lista1Controller extends AbstractController
 
         return new JsonResponse([
             'histogram' => $histogram,
+        ]);
+    }
+
+    #[Route('/lista1/zadanie3/oblicz')]
+    public function zadanie3Oblicz(Request $request): JsonResponse
+    {
+        $values = array_map(fn ($value) => (int) $value, json_decode($request->getContent(), true)['values']);
+
+        [$empiricalDistribution, $minDistance] = $this->empiricalDistributionChartProvider->getExtendedChart($values);
+        $uniformDistribution = $this->uniformDistributionChartProvider->getExtendedChart(min($values), max($values), $minDistance);
+        $odlegloscKolmogorowa = $this->empiricalDistributionChartProvider->calculateKolmogorovDistance($values);
+
+        return new JsonResponse([
+            'empirical_distribution' => $empiricalDistribution,
+            'uniform_distribution' => $uniformDistribution,
+            'komlogorov_distance' => $odlegloscKolmogorowa,
         ]);
     }
 }
