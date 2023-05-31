@@ -104,7 +104,7 @@ function renderChart(meta) {
                 {
                     label: `N(${meta.mean}, ${meta.standardDeviation})`,
                     data: probability,
-                    backgroundColor: '#A020F0',
+                    backgroundColor: 'rgba(160, 32, 240, .5)',
                     fill: true
                 }
             ]

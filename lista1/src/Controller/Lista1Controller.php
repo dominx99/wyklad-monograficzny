@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\EmpiricalDistributionChartProvider;
+use App\Service\EmpiricalStandardDeviationCalculator;
 use App\Service\HistogramCalculator;
 use App\Service\NormalDistributionCalculator;
 use App\Service\NormalDistributionChartProvider;
@@ -23,6 +24,7 @@ final class Lista1Controller extends AbstractController
         private readonly HistogramCalculator $histogramCalculator,
         private readonly EmpiricalDistributionChartProvider $empiricalDistributionChartProvider,
         private readonly UniformDistributionChartProvider $uniformDistributionChartProvider,
+        private readonly EmpiricalStandardDeviationCalculator $empiricalStandardDeviationCalculator,
     ) {
     }
 
@@ -42,6 +44,12 @@ final class Lista1Controller extends AbstractController
     public function zadanie3(): Response
     {
         return $this->render('lista1/zadanie3.html.twig');
+    }
+
+    #[Route('/lista1/zadanie4')]
+    public function zadanie4(): Response
+    {
+        return $this->render('lista1/zadanie4.html.twig');
     }
 
     #[Route('/lista1/zadanie1/oblicz')]
@@ -100,5 +108,15 @@ final class Lista1Controller extends AbstractController
             'uniform_distribution' => $uniformDistribution,
             'komlogorov_distance' => $odlegloscKolmogorowa,
         ]);
+    }
+
+    #[Route('/lista1/zadanie4/oblicz')]
+    public function zadanie4Oblicz(Request $request): JsonResponse
+    {
+        $content = json_decode($request->getContent(), true);
+        $values = array_map(fn ($value) => (float) $value, $content['values']);
+        $data = $this->empiricalStandardDeviationCalculator->calculate($values);
+
+        return new JsonResponse($data);
     }
 }
