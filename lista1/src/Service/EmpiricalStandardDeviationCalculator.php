@@ -38,7 +38,7 @@ final class EmpiricalStandardDeviationCalculator
         if ($empiricalStandardDeviation != 0) {
             $mean_diff_third = array_map(function ($x) use ($mean) {
                 return pow($x - $mean, 3);
-            }, $oldValues);
+            }, $values);
             $skewness = array_sum($mean_diff_third) / ($n * pow($empiricalStandardDeviation, 3));
         }
 
@@ -47,7 +47,7 @@ final class EmpiricalStandardDeviationCalculator
         if ($empiricalStandardDeviation != 0) {
             $mean_diff_fourth = array_map(function ($x) use ($mean) {
                 return pow($x - $mean, 4);
-            }, $oldValues);
+            }, $values);
             $kurtosis_coeff = array_sum($mean_diff_fourth) / ($n * pow($empiricalStandardDeviation, 4));
         }
 
