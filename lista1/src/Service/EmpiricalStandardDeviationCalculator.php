@@ -27,7 +27,9 @@ final class EmpiricalStandardDeviationCalculator
         $q2 = $values[round(0.5 * (count($values) + 1)) - 1];
         $q3 = $values[round(0.75 * (count($values) + 1)) - 1];
 
-        $median = $q2;
+        $median = $n % 2 === 0
+            ? ($values[$n / 2 - 1] + $values[$n / 2]) / 2
+            : $values[($n - 1) / 2];
 
         // Oblicz współczynnik skosności
         $skewness = 0;
