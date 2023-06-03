@@ -19,6 +19,8 @@ final class EmpiricalStandardDeviationCalculator
         }, $values);
         $empiricalStandardDeviation = sqrt(array_sum($variance) / ($n - 1));
 
+        $oldValues = $values;
+
         // Oblicz kwartyle
         sort($values);
         $q1 = $values[round(
@@ -34,10 +36,10 @@ final class EmpiricalStandardDeviationCalculator
         // Oblicz współczynnik skosności
         $skewness = 0;
         if ($empiricalStandardDeviation != 0) {
-            $mean_diff_cubed = array_map(function ($x) use ($mean) {
+            $mean_diff_third = array_map(function ($x) use ($mean) {
                 return pow($x - $mean, 3);
-            }, $values);
-            $skewness = array_sum($mean_diff_cubed) / ($n * pow($empiricalStandardDeviation, 3));
+            }, $oldValues);
+            $skewness = array_sum($mean_diff_third) / ($n * pow($empiricalStandardDeviation, 3));
         }
 
         // Oblicz współczynnik skupienia
@@ -45,8 +47,8 @@ final class EmpiricalStandardDeviationCalculator
         if ($empiricalStandardDeviation != 0) {
             $mean_diff_fourth = array_map(function ($x) use ($mean) {
                 return pow($x - $mean, 4);
-            }, $values);
-            $kurtosis_coeff = (array_sum($mean_diff_fourth) / ($n * pow($empiricalStandardDeviation, 4))) - 3;
+            }, $oldValues);
+            $kurtosis_coeff = array_sum($mean_diff_fourth) / ($n * pow($empiricalStandardDeviation, 4));
         }
 
         return [
