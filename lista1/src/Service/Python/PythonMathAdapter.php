@@ -13,6 +13,10 @@ final class PythonMathAdapter
     private const MEAN = 'src/resources/python/math/mean.py';
     private const VARIANCE = 'src/resources/python/math/variance.py';
     private const KSTEST = 'src/resources/python/math/kstest.py';
+    private const SKEWTEST = 'src/resources/python/math/skewtest.py';
+    private const KURTOSISTEST = 'src/resources/python/math/kurtosistest.py';
+    private const SKEW = 'src/resources/python/math/skew.py';
+    private const KURTOSIS = 'src/resources/python/math/kurtosis.py';
 
     public function __construct(private readonly string $projectDir)
     {
@@ -36,6 +40,26 @@ final class PythonMathAdapter
     public function kstest(array $data): array
     {
         return $this->execute(self::KSTEST, json_encode($data));
+    }
+
+    public function skewtest(array $data): array
+    {
+        return $this->execute(self::SKEWTEST, json_encode($data));
+    }
+
+    public function kurtosistest(array $data): array
+    {
+        return $this->execute(self::KURTOSISTEST, json_encode($data));
+    }
+
+    public function skew(array $data): array
+    {
+        return $this->execute(self::SKEW, json_encode($data));
+    }
+
+    public function kurtosis(array $data): array
+    {
+        return $this->execute(self::KURTOSIS, json_encode($data));
     }
 
     private function execute(string $path, string $json): array

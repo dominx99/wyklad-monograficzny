@@ -1,0 +1,36 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Testy na istotność współczynnika asymetrii i skupienia</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div>
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <div>
+                        <label for="alpha">Poziom istotności (alfa)</label>
+                        <input id="alpha" type="number" class="form-control" placeholder="Przykładowe wartości: 0.1, 0.05, 0.01" value="0.05">
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="row d-none mt-3" id="result-card">
+                    <div class="col-md-12">
+                        <h4 class="alert alert-success">
+                            <div id="result"></div>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista2/3.js') }}"></script>
+{% endblock %}

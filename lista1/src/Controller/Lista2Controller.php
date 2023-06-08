@@ -91,6 +91,24 @@ final class Lista2Controller extends AbstractController
     #[Route('/lista2/zadanie3/oblicz')]
     public function zadanie3Oblicz(Request $request): JsonResponse
     {
+        $body = json_decode($request->getContent(), true);
+
+        $data = array_map(fn ($value) => (float) $value, $body['values']);
+
+        $skewTest = $this->pythonMathAdapter->skewtest($data);
+        $kurtosisTest = $this->pythonMathAdapter->kurtosistest($data);
+
+        $kurtosis = $this->pythonMathAdapter->kurtosis($data);
+        $kurtosis['kurtosis'] += 3;
+        $skew = $this->pythonMathAdapter->skew($data);
+        $skew['skew'] = abs($skew['skew']);
+
+        return new JsonResponse([
+            'skew_test' => $skewTest,
+            'kurtosis_test' => $kurtosisTest,
+            ...$skew,
+            ...$kurtosis,
+        ]);
     }
 
     #[Route('/lista2/zadanie4/oblicz')]
