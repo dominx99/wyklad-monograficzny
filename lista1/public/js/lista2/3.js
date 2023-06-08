@@ -45,7 +45,7 @@ function setResult(data) {
 
 function fillInput() {
     var input = document.getElementById('input');
-    input.value = "60 63 64 66 67 68 69 70 70 71 72 72 74 74 80 80 81 81 81 81 81 82 83 84 84 85 85 85 89 89 90 93 95 98";
+    input.value = "3.1 5.1 4.2 4.1 5.2 5.7 4.3 5.4 5.3 3.4 5.0 3.2 5.0 5.4 4.4 5 3.9 5.5 4.8 4.5 4.1 5.5 4.7 3.1 5.5 6.0 3.1 4.9 5.4 6.1 5.3 4.1 6.2 5.2 4.3 4.8 4.5 5.2 3.3 5.2";
 }
 
 function onLoad() {
