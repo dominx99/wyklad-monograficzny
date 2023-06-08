@@ -1,6 +1,30 @@
-FROM thecodingmachine/php:8.2-v4-fpm as php
+FROM php:8.2-fpm as php
 
-COPY --from=composer:2.5.1 --chown=docker:docker /usr/bin/composer /usr/bin/composer
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    zip \
+    libzip-dev \
+    libonig-dev \
+    wget \
+    git \
+    jpegoptim \
+    optipng \
+    pngquant \
+    gifsicle \
+    python3 \
+    pip
+
+RUN python3 -m pip install --upgrade pip
+RUN pip install scipy pandas
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo_mysql zip exif pcntl bcmath
+
+COPY --from=composer:2.3.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /application
 

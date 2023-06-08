@@ -1,0 +1,22 @@
+<h2>TABELA WYNIKÓW POŚREDNICH</h2>
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Xi</th>
+        <th>(Xi-X)/S</th>
+        <th>Φ((Xi-X)/S)</th>
+        <th>i/n</th>
+        <th>|Φ((Xi-X)/S)-i/n|</th>
+        <th>(i-1)/n</th>
+        <th>|Φ((Xi-X)/S)-(i-1)/n|</th>
+    </tr>
+    <tbody>
+    {% for row in table %}
+        <tr>
+        {% for i, cell in row %}
+            <td style="{{ i == 6 and maximum == cell ? 'background-color: #CE8EF2; font-weight: bold' : '' }}">{{ cell }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -44,4 +44,24 @@ final class Helpers
             'less' => 'more'
         };
     }
+
+    public static function kstest(array $data)
+    {
+    }
+
+    public static function empiricalCdf(array $data): array
+    {
+        $n = count($data);
+
+        // Sortowanie danych
+        sort($data);
+
+        // Obliczanie dystrybuanty empirycznej
+        $empirical_cdf = array();
+        for ($i = 0; $i < $n; $i++) {
+            $empirical_cdf[$data[$i]] = ($i + 1) / $n;
+        }
+
+        return $empirical_cdf;
+    }
 }

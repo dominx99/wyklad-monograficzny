@@ -1,0 +1,42 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Zadanie 1</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div>
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <div>
+                        <label for="alpha">Alfa</label>
+                        <select id="alpha" name="alpha" class="form-control">
+                            <option value="0.01">0.01</option>
+                            <option value="0.05" selected>0.05</option>
+                        </select>
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6 d-none" id="result-card">
+                <div class="table-responsive" id="table"></div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <h4 class="card p-3">
+                            <div id="result-value"></div>
+                            <div id="result-message"></div>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista2/1.js') }}"></script>
+{% endblock %}

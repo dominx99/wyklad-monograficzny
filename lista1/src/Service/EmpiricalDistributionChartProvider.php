@@ -14,7 +14,18 @@ final class EmpiricalDistributionChartProvider
     public function provide(array $values)
     {
         sort($values);
-        $valuesMap = array_count_values($values);
+        $valuesMap = array_reduce($values, function ($carry, $value) {
+            $value = (string) $value;
+
+            if (!isset($carry[$value])) {
+                $carry[$value] = 0;
+            }
+
+            $carry[$value]++;
+
+            return $carry;
+        }, []);
+
         $data = [];
         $valuesCount = count($values);
         $a = min($values);
@@ -35,7 +46,6 @@ final class EmpiricalDistributionChartProvider
 
                 continue;
             }
-
 
             if ($previousStep !== null) {
                 $distances[] = $stepValue - $previousStep;
