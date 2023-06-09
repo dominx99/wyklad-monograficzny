@@ -14,7 +14,7 @@
     {% for row in table %}
         <tr>
         {% for i, cell in row %}
-            <td style="{{ i == 6 and maximum == cell ? 'background-color: #CE8EF2; font-weight: bold' : '' }}">{{ cell }}</td>
+            <td style="{{ (i == 6 or i == 4) and maximum == cell ? 'background-color: #CE8EF2; font-weight: bold' : '' }}">{{ cell }}</td>
         {% endfor %}
         </tr>
     {% endfor %}

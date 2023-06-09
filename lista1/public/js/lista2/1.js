@@ -18,6 +18,9 @@ document.querySelector('#submit-button').addEventListener('click', (e) => {
 
 function setResult(data) {
     document.getElementById('table').innerHTML = data.table;
+    document.getElementById('result-mean').innerHTML = `x<sub>śr</sub>=` + data.mean;
+    document.getElementById('result-s').innerHTML = `S=` + data.s;
+    document.getElementById('result-s1').innerHTML = `S<sub>1</sub>=` + data.s1;
 
     if (data.maximum > data.criticalValue) {
         document.getElementById('result-value').innerHTML = `d<sub>${data.n}</sub>=` + data.maximum + ' > ' + `k<sub>${data.n}</sub>=` +  data.criticalValue;

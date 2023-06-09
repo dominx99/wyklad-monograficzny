@@ -9,8 +9,7 @@ data = json.loads(data_string)
 n = len(data)
 x_bar = sum(data) / n
 s = (sum((x - x_bar) ** 2 for x in data) / (n-1)) ** 0.5
-
-maximum = max([abs(norm.cdf((x - x_bar) / s) - ((i - 1) / n)) for i, x in enumerate(data, start=1)])
+s_1 = s * (n / (n - 1)) ** 0.5
 
 intermediate_results = pd.DataFrame([
     data,
@@ -22,9 +21,14 @@ intermediate_results = pd.DataFrame([
     [abs(norm.cdf((x - x_bar) / s) - ((i - 1) / n)) for i, x in enumerate(data, start=1)]
 ])
 
+dmaxes = max(intermediate_results.iloc[4]), max(intermediate_results.iloc[6])
+dmax = max(dmaxes)
+
 data = {
-    "maximum": max([abs(norm.cdf((x - x_bar) / s) - ((i - 1) / n)) for i, x in enumerate(data, start=1)]),
-    "result": intermediate_results.to_dict(orient='list')
+    "maximum": dmax,
+    "result": intermediate_results.to_dict(orient='list'),
+    "s": s,
+    "s1": s_1,
 }
 
 print(json.dumps(data, indent=4))
