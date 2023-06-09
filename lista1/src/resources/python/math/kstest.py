@@ -7,8 +7,8 @@ import json
 data_string = sys.argv[1]
 data = json.loads(data_string)
 
-data = sorted(data)
 data = list(set(data))
+data = sorted(data)
 
 n = len(data)
 x_bar = mean(data)
