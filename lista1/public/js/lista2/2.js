@@ -38,7 +38,7 @@ function setResult(data) {
 
 function fillInput() {
     var input = document.getElementById('input');
-    input.value = "5.0 18.0 15.2 5.0 7.8 13.5 13.1";
+    input.value = "12.4 14.2 14.9 15.6 16.1 17.3 17.9 18.2 18.6 19.3";
 }
 
 function onLoad() {
