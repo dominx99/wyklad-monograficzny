@@ -68,7 +68,7 @@ final class Lista2Controller extends AbstractController
         ])->getContent();
 
         return new JsonResponse([
-            'n' => count($data),
+            'n' => count($result['result']),
             'criticalValue' => $criticalValue,
             'maximum' => $result['maximum'],
             's' => $result['s'],

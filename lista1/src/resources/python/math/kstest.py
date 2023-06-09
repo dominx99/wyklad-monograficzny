@@ -1,13 +1,17 @@
 import sys
 import pandas as pd
 from scipy.stats import norm
+from statistics import mean
 import json
 
 data_string = sys.argv[1]
 data = json.loads(data_string)
 
+data = sorted(data)
+data = list(set(data))
+
 n = len(data)
-x_bar = sum(data) / n
+x_bar = mean(data)
 s = (sum((x - x_bar) ** 2 for x in data) / (n-1)) ** 0.5
 s_1 = s * (n / (n - 1)) ** 0.5
 
