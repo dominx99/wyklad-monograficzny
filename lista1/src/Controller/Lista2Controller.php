@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\EmpiricalDistributionChartProvider;
+use App\Service\HistogramCalculator;
+use App\Service\NormalDistributionCalculator;
 use App\Service\Python\PythonMathAdapter;
 use App\Service\TableProvider\KSTestCriticalValuesTable;
-use MathPHP\Probability\Distribution\Continuous\ChiSquared;
-use MathPHP\Probability\Distribution\Continuous\Normal;
+use MathPHP\Probability\Distribution\Table\ChiSquared;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,8 @@ final class Lista2Controller extends AbstractController
         private readonly PythonMathAdapter $pythonMathAdapter,
         private readonly EmpiricalDistributionChartProvider $empiricalDistributionChartProvider,
         private readonly KSTestCriticalValuesTable $ksTestCriticalValuesTable,
+        private readonly HistogramCalculator $histogramCalculator,
+        private readonly NormalDistributionCalculator $normalDistributionCalculator,
     ) {
     }
 
@@ -45,6 +48,7 @@ final class Lista2Controller extends AbstractController
     #[Route('/lista2/zadanie4')]
     public function zadanie4(): Response
     {
+
         return $this->render('lista2/zadanie4.html.twig');
     }
 
@@ -119,5 +123,95 @@ final class Lista2Controller extends AbstractController
     #[Route('/lista2/zadanie4/oblicz')]
     public function zadanie4Oblicz(Request $request): JsonResponse
     {
+        $body = json_decode($request->getContent(), true);
+
+        $mergeBoundaries = $body['mergeBoundaries'];
+        $alpha = (float) $body['alpha'];
+        $data = array_map(fn ($i) => (float) $i, $body['values']);
+
+        $histogram = $this->histogramCalculator->calculate($data);
+        $histogramClone = [...$histogram];
+
+        $pValues = [];
+
+        $n = count($data);
+        $mean = $this->pythonMathAdapter->mean($data)['mean'];
+        $stdev = $this->pythonMathAdapter->stdev($data)['stdev'];
+
+        if ($mergeBoundaries) {
+            $value = $this->normalDistributionCalculator->calculateProbability(
+                $mean,
+                $stdev,
+                'less',
+                [
+                    $histogramClone[0]['rangeEnd']
+                ]
+            ) + $this->normalDistributionCalculator->calculateProbability(
+                $mean,
+                $stdev,
+                'more',
+                [
+                    $histogramClone[array_key_last($histogramClone)]['rangeStart']
+                ]
+            );
+            $pValues[] = [
+                'value' => $value,
+                'count' => $histogramClone[0]['binCount'] + $histogramClone[array_key_last($histogramClone)]['binCount'],
+            ];
+
+            array_pop($histogramClone);
+            array_shift($histogramClone);
+        }
+
+        foreach ($histogramClone as $key => $value) {
+            $value = $this->normalDistributionCalculator->calculateProbability(
+                $this->pythonMathAdapter->mean($data)['mean'],
+                $this->pythonMathAdapter->stdev($data)['stdev'],
+                'between',
+                [
+                    $value['rangeStart'],
+                    $value['rangeEnd'],
+                ]
+            );
+            $pValues[] = [
+                'value' => $value,
+                'count' => $histogramClone[$key]['binCount'],
+            ];
+        }
+
+        $stats = array_map(
+            function ($pValue) use ($n) {
+                return pow(($pValue['count'] - ($pValue['value'] * $n)), 2) / ($pValue['value'] * $n);
+            },
+            $pValues,
+        );
+
+        $sum = array_sum($stats);
+
+        $criticalValue = ChiSquared::getChiSquareValue(count($pValues) - 3, $alpha);
+
+        if ($criticalValue > $sum) {
+            $result = 'Wartość statystyki testowej jest <strong>mniejsza</strong> od wartości krytycznej, więc <strong>nie ma podstaw</strong> do odrzucenia hipotezy';
+        } else {
+            $result = 'Wartość statystyki testowej jest <strong>większa</strong> od wartości krytycznej, więc <strong>należy odrzucić</strong> hipotezę';
+        }
+
+        return new JsonResponse([
+            'histogram' => $histogram,
+            'result_list' => $this->render('partials/result_list.html.twig', [
+                'results' => [
+                    'n = ' => $n,
+                    'średnia = ' => $mean,
+                    'S = ' => $stdev,
+                    'wartość statystyki testowej = ' . implode(' + ', $stats) . ' = ' => $sum,
+                    'wartość krytyczna = ' => $criticalValue,
+                    'Wniosek: ' => $result,
+                ],
+            ])->getContent(),
+            'p_value_table' => $this->render('partials/table.html.twig', [
+                'headers' => ['P', 'Prawdopodobieństwo'],
+                'table' => array_map(fn ($pValue, $key) => [$key + 1, $pValue['value']], $pValues, array_keys($pValues)),
+            ])->getContent(),
+        ]);
     }
 }

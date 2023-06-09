@@ -1,0 +1,56 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Testy na istotność współczynnika asymetrii i skupienia</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div class="mb-2">
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label for="alpha">Poziom istotności (alfa)</label>
+                        <select id="alpha" name="alpha" class="form-control">
+                            <option value="0.995">0.995</option>
+                            <option value="0.975">0.975</option>
+                            <option value="0.200">0.200</option>
+                            <option value="0.100">0.100</option>
+                            <option value="0.050">0.050</option>
+                            <option value="0.025">0.025</option>
+                            <option value="0.025">0.020</option>
+                            <option value="0.010">0.010</option>
+                            <option value="0.005" selected>0.005</option>
+                            <option value="0.002">0.002</option>
+                            <option value="0.001">0.001</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="merge-boundaries">
+                      <label class="form-check-label" for="merge-boundaries">
+                        Połącz klasy brzegowe
+                      </label>
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6 mb-5">
+                <div class="row d-none mt-3" id="result-card">
+                    <div class="col-md-12">
+                        <div class="w-full">
+                            <canvas id="histogram" style="width: 100%;"></canvas>
+                        </div>
+                        <div id="result-p_value_table"></div>
+                        <div id="result-result_list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista2/4.js') }}"></script>
+{% endblock %}
