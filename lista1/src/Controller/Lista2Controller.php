@@ -54,12 +54,12 @@ final class Lista2Controller extends AbstractController
         $body = json_decode($request->getContent(), true);
 
         $data = array_map(fn ($value) => (float) $value, $body['values']);
+        $data = array_unique($data);
+        sort($data);
         $alpha = (float) $body['alpha'];
 
         $result = $this->pythonMathAdapter->kstest($data);
         $criticalValue = $this->ksTestCriticalValuesTable->getCriticalValue(count($data), $alpha);
-
-        $mean = $this->pythonMathAdapter->mean($data);
 
         $table = $this->render('lista2/zadanie1_table.html.twig', [
             'table' => $result['result'],
@@ -74,7 +74,7 @@ final class Lista2Controller extends AbstractController
             's' => $result['s'],
             's1' => $result['s1'],
             'table' => $table,
-            ...$mean,
+            'mean' => $result['mean'],
         ]);
     }
 

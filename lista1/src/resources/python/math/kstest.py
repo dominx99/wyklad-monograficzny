@@ -7,9 +7,6 @@ import json
 data_string = sys.argv[1]
 data = json.loads(data_string)
 
-data = list(set(data))
-data = sorted(data)
-
 n = len(data)
 x_bar = mean(data)
 s = (sum((x - x_bar) ** 2 for x in data) / (n-1)) ** 0.5
@@ -33,6 +30,7 @@ data = {
     "result": intermediate_results.to_dict(orient='list'),
     "s": s,
     "s1": s_1,
+    "mean": x_bar,
 }
 
 print(json.dumps(data, indent=4))
