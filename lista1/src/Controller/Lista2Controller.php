@@ -11,6 +11,7 @@ use App\Service\NormalDistributionCalculator;
 use App\Service\Python\PythonMathAdapter;
 use App\Service\TableProvider\KSTestCriticalValuesTable;
 use MathPHP\Probability\Distribution\Table\ChiSquared;
+use MathPHP\Statistics\Average;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +51,12 @@ final class Lista2Controller extends AbstractController
     public function zadanie4(): Response
     {
         return $this->render('lista2/zadanie4.html.twig');
+    }
+
+    #[Route('/lista2/zadanie5')]
+    public function zadanie5(): Response
+    {
+        return $this->render('lista2/zadanie5.html.twig');
     }
 
     #[Route('/lista2/zadanie1/oblicz')]
@@ -215,6 +222,51 @@ final class Lista2Controller extends AbstractController
             'p_value_table' => $this->render('partials/table.html.twig', [
                 'headers' => ['P', 'Prawdopodobieństwo'],
                 'table' => array_map(fn ($pValue, $key) => [$key + 1, $pValue['value']], $pValues, array_keys($pValues)),
+            ])->getContent(),
+        ]);
+    }
+
+    #[Route('/lista2/zadanie5/oblicz')]
+    public function zadanie5Oblicz(Request $request): JsonResponse
+    {
+        $body = json_decode($request->getContent(), true);
+        $data = array_map(fn ($i) => (float) $i, $body['values']);
+        $m = (int) $body['m'];
+
+        $averages = Helpers::exponentialMovingAverage($data, $m);
+        $medians = Helpers::exponentialMovingMedian($data, $m);
+
+        $averageResiduals = Helpers::calculateAverageResiduals($data, $averages);
+        $medianResiduals = Helpers::calculateAverageResiduals($data, $medians);
+
+        return new JsonResponse([
+            'data' => $data,
+            'm' => $m,
+            'averages' => $averages,
+            'medians' => $medians,
+            'average_residuals' => $averageResiduals,
+            'median_residuals' => $medianResiduals,
+            'average_table' => $this->render('partials/table.html.twig', [
+                'headers' => [
+                    'i',
+                    ...range(0, count($averages) - 1)
+                ],
+                'table' => [
+                    ['Xi', ...$data],
+                    ['Średnia', ...$averages],
+                    ['Reszta', ...$averageResiduals],
+                ],
+            ])->getContent(),
+            'median_table' => $this->render('partials/table.html.twig', [
+                'headers' => [
+                    'i',
+                    ...range(0, count($medians) - 1)
+                ],
+                'table' => [
+                    ['Xi', ...$data],
+                    ['Me(X)', ...$medians],
+                    ['Xi-Me(X)', ...$medianResiduals],
+                ],
             ])->getContent(),
         ]);
     }

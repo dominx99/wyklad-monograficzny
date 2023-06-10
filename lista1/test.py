@@ -1,28 +1,50 @@
-n = 34
-mean = 78.44
-S = 9.66
+import numpy as np
+import matplotlib.pyplot as plt
 
-class_intervals = [60, 67.6, 75.2, 82.8, 90.4, 98]
-class_counts = [0, 0, 0, 0, 0]
+def moving_average(sequence, window_size):
+    averages = []
+    for i in range(len(sequence) - window_size + 1):
+        window = sequence[i:i+window_size]
+        average = np.mean(window)
+        averages.append(average)
+    return averages
 
-data = [60, 63, 64, 66, 67, 68, 69, 70, 70, 71, 72, 72, 74, 74, 80, 80, 81, 81, 81, 81, 81, 82, 83, 84, 84, 85, 85, 85, 89, 89, 90, 93, 95, 98]  # Umieść swoje dane w tej liście
+def moving_median(sequence, window_size):
+    medians = []
+    for i in range(len(sequence) - window_size + 1):
+        window = sequence[i:i+window_size]
+        median = np.median(window)
+        medians.append(median)
+    return medians
 
-# Liczenie liczebności dla każdej klasy
-for value in data:
-    if value >= class_intervals[0] and value < class_intervals[1]:
-        class_counts[0] += 1
-    elif value >= class_intervals[1] and value < class_intervals[2]:
-        class_counts[1] += 1
-    elif value >= class_intervals[2] and value < class_intervals[3]:
-        class_counts[2] += 1
-    elif value >= class_intervals[3] and value < class_intervals[4]:
-        class_counts[3] += 1
-    elif value >= class_intervals[4] and value <= class_intervals[5]:
-        class_counts[4] += 1
+def calculate_residuals(sequence, values):
+    residuals = [x - y for x, y in zip(sequence, values)]
+    return residuals
 
-# Obliczanie wartości p1, p2, p3, p4, p5
-p_values = [class_count / n for class_count in class_counts]
+# Dane wejściowe
+sequence = [6.5, 10.0, 24.7, 17.4, 14.4, -5.2, -14.1, 10.4, 24.0, 17.0, -26.6, 18.1, -15.2]
+window_size = 5
 
-# Wyświetlanie wartości p1, p2, p3, p4, p5
-for i, p_value in enumerate(p_values):
-    print(f"p{i+1}: {p_value}")
+# Obliczanie ciągu średnich ruchomych
+moving_averages = moving_average(sequence, window_size)
+
+# Obliczanie ciągu median ruchomych
+moving_medians = moving_median(sequence, window_size)
+
+# Obliczanie ciągu reszt dla średniej ruchomej
+residuals_averages = calculate_residuals(sequence[window_size-1:], moving_averages)
+
+# Obliczanie ciągu reszt dla mediany ruchomej
+residuals_medians = calculate_residuals(sequence[window_size-1:], moving_medians)
+
+# Tworzenie wykresu
+plt.plot(sequence, label='Dane wejściowe')
+plt.plot(range(window_size-1, len(sequence)), moving_averages, label='Średnia ruchoma (m={})'.format(window_size))
+plt.plot(range(window_size-1, len(sequence)), moving_medians, label='Mediana ruchoma (m={})'.format(window_size))
+plt.plot(range(window_size-1, len(sequence)), residuals_averages, label='Reszty (średnia)')
+plt.plot(range(window_size-1, len(sequence)), residuals_medians, label='Reszty (mediana)')
+plt.xlabel('Indeks')
+plt.ylabel('Wartość')
+plt.legend()
+plt.title('Zmienna ruchoma i reszty')
+plt.show()

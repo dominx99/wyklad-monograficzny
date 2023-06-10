@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Exception;
+use MathPHP\Statistics\Average;
+
 final class Helpers
 {
     public static function standardNormalCdf(float $zScore): float|int
@@ -63,5 +66,100 @@ final class Helpers
         }
 
         return $empirical_cdf;
+    }
+
+    public static function movingMedian(array $sequence, $window_size)
+    {
+        $medians = [];
+        $length = count($sequence);
+        for ($i = 0; $i <= $length - $window_size; $i++) {
+            $window = array_slice($sequence, $i, $window_size);
+            sort($window);
+            $median_index = floor($window_size / 2);
+            $median = $window[$median_index];
+            $medians[] = $median;
+        }
+        return $medians;
+    }
+
+    public static function calculateAverageResiduals(array $sequence, array $moving_averages)
+    {
+        $residuals = [];
+        $length = count($sequence);
+        for ($i = 0; $i < $length; $i++) {
+            $residual = $sequence[$i] - $moving_averages[$i];
+            $residuals[] = $residual;
+        }
+        return $residuals;
+    }
+
+    public static function exponentialMovingMedian($sequence, $windowSize)
+    {
+        $windowSizeAtStart = 3;
+
+        $medians = [];
+
+        $length = $windowSize;
+        $tmp = floor($length / 2);
+
+        foreach ($sequence as $key => $value) {
+            $length = $windowSize;
+            $cutFrom = 0;
+            $startExists = isset($sequence[$key - $tmp]);
+            $endExists = isset($sequence[$key + $tmp]);
+
+            if ($startExists && $endExists) {
+                $cutFrom = $key - $tmp;
+            } elseif ($startExists && !$endExists) {
+                $cutFrom = $key - $tmp;
+                $length = $windowSizeAtStart + (array_key_last($sequence) - $key);
+            } elseif (!$startExists && $endExists) {
+                $cutFrom = 0;
+                $length = $windowSizeAtStart + $key;
+            } else {
+                throw new Exception('Something went wrong');
+            }
+
+            $cutFrom = (int) $cutFrom;
+            $medianFrom = array_slice($sequence, $cutFrom, $length);
+            $medians[] = Average::median(($medianFrom));
+        }
+
+        return $medians;
+    }
+
+    public static function exponentialMovingAverage($sequence, $windowSize)
+    {
+        $windowSizeAtStart = 3;
+
+        $medians = [];
+
+        $length = $windowSize;
+        $tmp = floor($length / 2);
+
+        foreach ($sequence as $key => $value) {
+            $length = $windowSize;
+            $cutFrom = 0;
+            $startExists = isset($sequence[$key - $tmp]);
+            $endExists = isset($sequence[$key + $tmp]);
+
+            if ($startExists && $endExists) {
+                $cutFrom = $key - $tmp;
+            } elseif ($startExists && !$endExists) {
+                $cutFrom = $key - $tmp;
+                $length = $windowSizeAtStart + (array_key_last($sequence) - $key);
+            } elseif (!$startExists && $endExists) {
+                $cutFrom = 0;
+                $length = $windowSizeAtStart + $key;
+            } else {
+                throw new Exception('Something went wrong');
+            }
+
+            $cutFrom = (int) $cutFrom;
+            $medianFrom = array_slice($sequence, $cutFrom, $length);
+            $medians[] = Average::mean(($medianFrom));
+        }
+
+        return $medians;
     }
 }
