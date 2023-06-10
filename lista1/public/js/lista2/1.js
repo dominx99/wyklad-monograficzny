@@ -8,6 +8,7 @@ document.querySelector('#submit-button').addEventListener('click', (e) => {
         body: JSON.stringify({
             values: input.value.split(' ').map(Number),
             alpha: document.getElementById('alpha').value,
+            excludeDuplicates: document.getElementById('exclude-duplicates').checked,
         }),
     }).then(function(response) {
         response.json().then(function(data) {
@@ -19,7 +20,7 @@ document.querySelector('#submit-button').addEventListener('click', (e) => {
 function setResult(data) {
     document.getElementById('table').innerHTML = data.table;
     document.getElementById('result-mean').innerHTML = `x<sub>śr</sub>=` + data.mean;
-    document.getElementById('result-s').innerHTML = `S=` + data.s;
+    document.getElementById('result-s').innerHTML = `S<sub>1</sub>=` + data.s;
     document.getElementById('result-s1').innerHTML = `S<sub>1</sub>=` + data.s1;
 
     if (data.maximum > data.criticalValue) {

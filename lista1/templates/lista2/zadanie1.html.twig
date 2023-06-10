@@ -7,17 +7,23 @@
         <div class="row">
             <div class="col-md-6">
                 <form id="form">
-                    <div>
+                    <div class="mb-2">
                         <label for="input">Dane wejściowe</label>
                         <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
                         </textarea>
                     </div>
-                    <div>
+                    <div class="mb-2">
                         <label for="alpha">Alfa</label>
                         <select id="alpha" name="alpha" class="form-control">
                             <option value="0.01">0.01</option>
                             <option value="0.05" selected>0.05</option>
                         </select>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="exclude-duplicates">
+                      <label class="form-check-label" for="exclude-duplicates">
+                        Wyklucz duplikaty
+                      </label>
                     </div>
 
                     <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
@@ -30,7 +36,7 @@
                         <h4 class="card p-3">
                             <div id="result-mean"></div>
                             <div id="result-s"></div>
-                            <div id="result-s1"></div>
+                            <div class="d-none" id="result-s1"></div>
                             <div id="result-value"></div>
                             <div id="result-message"></div>
                         </h4>

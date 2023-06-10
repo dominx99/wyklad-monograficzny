@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\EmpiricalDistributionChartProvider;
+use App\Service\Helpers;
 use App\Service\HistogramCalculator;
 use App\Service\NormalDistributionCalculator;
 use App\Service\Python\PythonMathAdapter;
@@ -48,7 +49,6 @@ final class Lista2Controller extends AbstractController
     #[Route('/lista2/zadanie4')]
     public function zadanie4(): Response
     {
-
         return $this->render('lista2/zadanie4.html.twig');
     }
 
@@ -58,7 +58,11 @@ final class Lista2Controller extends AbstractController
         $body = json_decode($request->getContent(), true);
 
         $data = array_map(fn ($value) => (float) $value, $body['values']);
-        $data = array_unique($data);
+
+        if ($body['excludeDuplicates']) {
+            $data = array_unique($data);
+        }
+
         sort($data);
         $alpha = (float) $body['alpha'];
 
