@@ -55,7 +55,7 @@ final class Lista3Controller extends AbstractController
             ? 'Nie ma podstaw do odrzucenia hipotezy zerowej'
             : 'Hipoteza zerowa została odrzucona';
 
-        $g = Outlier::grubbsCriticalValue($alpha, $n, 'one');
+        $g = Outlier::grubbsCriticalValue($alpha / 2, $n, 'one');
         $gCriticalValue = Outlier::grubbsStatistic($data, 'two');
         $gMessage = $gCriticalValue < $g
             ? 'Nie ma podstaw do odrzucenia hipotezy zerowej'
