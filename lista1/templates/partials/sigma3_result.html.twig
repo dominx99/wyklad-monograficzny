@@ -1,0 +1,34 @@
+{% for item in results %}
+    <div class="mb-3 card p-3">
+        <div>
+            X<sub>{{ item.prevData|length }}</sub> = ({{ item.prevData|join(', ') }})
+        </div>
+        <div>
+            Pomiar <b>{{ item.outlier }}</b> może być podejrzany o bycie odstającym.<br>
+            Rozpatrzmy próbę bez tego elementu
+        </div>
+        <div>
+            X<sub>{{ item.data|length }}</sub> = ({{ item.data|join(', ') }})
+        </div>
+        <div>
+            X<sub>śr</sub> = {{ item.mean }}, S = {{ item.s }}
+        </div>
+        <div>
+            Określamy przedzial 3-sigmowy<br>
+            (X<sub>śr</sub> - 3S, X<sub>śr</sub> + 3S) = ({{ item.lowerBound }}, {{ item.upperBound }})
+        </div>
+
+        {% if item.isOutlier %}
+            <div class="text-danger">Ponieważ {{ item.outlier }} nie naleźy do ({{ item.lowerBound }}, {{ item.upperBound }}) to jest pomiarem odstającym</div>
+        {% else %}
+            <div class="text-success">Ponieważ {{ item.outlier }} naleźy do ({{ item.lowerBound }}, {{ item.upperBound }}) to nie jest pomiarem odstającym</div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<h3 class="card bg-info p-3">
+    <div>
+        {% set item = results|last %}
+        Wniosek: X<sub>{{ item.prevData|length }}</sub> = ({{ item.prevData|join(', ') }}) nie zawiera pomiarów odstających
+    </div>
+</h3>

@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Service\DixonTest;
 use App\Service\Helpers;
 use App\Service\Python\PythonMathAdapter;
+use App\Service\Sigm3Outliers;
 use MathPHP\Probability\Distribution\Table\ChiSquared;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Outlier;
@@ -19,14 +20,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class Lista3Controller extends AbstractController
 {
-    public function __construct(private readonly PythonMathAdapter $pythonMathAdapter)
-    {
+    public function __construct(
+        private readonly PythonMathAdapter $pythonMathAdapter,
+        private readonly Sigm3Outliers $sigma3Outliers
+    ) {
     }
 
-    #[Route(path: '/lista3/zadanie1', name: 'lista3_zadanie1', methods: ['GET'])]
+    #[Route(path: '/lista3/zadanie1', methods: ['GET'])]
     public function zadanie1(): Response
     {
         return $this->render('lista3/zadanie1.html.twig');
+    }
+
+    #[Route(path: '/lista3/zadanie2', methods: ['GET'])]
+    public function zadanie2(): Response
+    {
+        return $this->render('lista3/zadanie2.html.twig');
     }
 
     #[Route(path: '/lista3/zadanie1/oblicz', name: 'lista3_zadanie1_oblicz')]
@@ -68,6 +77,44 @@ final class Lista3Controller extends AbstractController
                     "wartość krytyczna = " => $g,
                     'Wniosek: ' => $gMessage,
                 ]
+            ])->getContent(),
+        ]);
+    }
+
+    #[Route(path: '/lista3/zadanie2/oblicz')]
+    public function zadanie2Oblicz(Request $request): JsonResponse
+    {
+        $body = json_decode($request->getContent(), true);
+        $data = array_map(fn ($item) => (float) $item, $body['values']);
+
+        sort($data);
+
+        $results = [];
+
+        $isLowerOutlier = false;
+        $isUpperOutlier = false;
+
+        do {
+            $lowerOutlier = $this->sigma3Outliers->checkLowerOutlier($data);
+            $upperOutlier = $this->sigma3Outliers->checkUpperOutlier($data);
+            $results[] = $lowerOutlier;
+            $results[] = $upperOutlier;
+            $isLowerOutlier = $lowerOutlier['isOutlier'];
+            $isUpperOutlier = $upperOutlier['isOutlier'];
+
+            if ($lowerOutlier['isOutlier']) {
+                $data = $this->sigma3Outliers->filterOutlier($data, $lowerOutlier['outlier']);
+            }
+
+            if ($upperOutlier['isOutlier']) {
+                $data = $this->sigma3Outliers->filterOutlier($data, $upperOutlier['outlier']);
+            }
+        } while ($isLowerOutlier || $isUpperOutlier);
+
+        return new JsonResponse([
+            'result' => $this->render('partials/sigma3_result.html.twig', [
+                'data' => $data,
+                'results' => $results,
             ])->getContent(),
         ]);
     }

@@ -1,0 +1,36 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Reguła 3 sigm
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Reguła 3 sigm</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div class="mb-2">
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6 d-none" id="result-card">
+                <div class="table-responsive" id="table"></div>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div id="result" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista3/2.js') }}"></script>
+{% endblock %}
