@@ -11,7 +11,6 @@ use App\Service\NormalDistributionCalculator;
 use App\Service\Python\PythonMathAdapter;
 use App\Service\TableProvider\KSTestCriticalValuesTable;
 use MathPHP\Probability\Distribution\Table\ChiSquared;
-use MathPHP\Statistics\Average;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

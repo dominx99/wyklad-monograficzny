@@ -1,50 +1,37 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy.stats import t
 
-def moving_average(sequence, window_size):
-    averages = []
-    for i in range(len(sequence) - window_size + 1):
-        window = sequence[i:i+window_size]
-        average = np.mean(window)
-        averages.append(average)
-    return averages
+def dixon_test(data, alpha=0.05):
+    data = np.array(data)
+    n = len(data)
+    sorted_data = np.sort(data)
+    range_max = sorted_data[-1] - sorted_data[0]
 
-def moving_median(sequence, window_size):
-    medians = []
-    for i in range(len(sequence) - window_size + 1):
-        window = sequence[i:i+window_size]
-        median = np.median(window)
-        medians.append(median)
-    return medians
+    critical_value = t.ppf(1 - alpha / (2 * n), n - 2)
+    test_statistic = range_max / (sorted_data[-1] - sorted_data[1])
 
-def calculate_residuals(sequence, values):
-    residuals = [x - y for x, y in zip(sequence, values)]
-    return residuals
+    return test_statistic > critical_value
 
-# Dane wejściowe
-sequence = [6.5, 10.0, 24.7, 17.4, 14.4, -5.2, -14.1, 10.4, 24.0, 17.0, -26.6, 18.1, -15.2]
-window_size = 5
+def grubbs_test(data, alpha=0.05):
+    data = np.array(data)
+    n = len(data)
+    mean = np.mean(data)
+    std = np.std(data, ddof=1)
 
-# Obliczanie ciągu średnich ruchomych
-moving_averages = moving_average(sequence, window_size)
+    critical_value = t.ppf(1 - alpha / (2 * n), n - 2)
 
-# Obliczanie ciągu median ruchomych
-moving_medians = moving_median(sequence, window_size)
+    test_statistics = np.abs(data - mean) / std
+    max_statistic = np.max(test_statistics)
 
-# Obliczanie ciągu reszt dla średniej ruchomej
-residuals_averages = calculate_residuals(sequence[window_size-1:], moving_averages)
+    return max_statistic > critical_value
 
-# Obliczanie ciągu reszt dla mediany ruchomej
-residuals_medians = calculate_residuals(sequence[window_size-1:], moving_medians)
+# Przykładowa próba
+sample = [2.86, 2.89, 2.9, 2.91, 2.99]
 
-# Tworzenie wykresu
-plt.plot(sequence, label='Dane wejściowe')
-plt.plot(range(window_size-1, len(sequence)), moving_averages, label='Średnia ruchoma (m={})'.format(window_size))
-plt.plot(range(window_size-1, len(sequence)), moving_medians, label='Mediana ruchoma (m={})'.format(window_size))
-plt.plot(range(window_size-1, len(sequence)), residuals_averages, label='Reszty (średnia)')
-plt.plot(range(window_size-1, len(sequence)), residuals_medians, label='Reszty (mediana)')
-plt.xlabel('Indeks')
-plt.ylabel('Wartość')
-plt.legend()
-plt.title('Zmienna ruchoma i reszty')
-plt.show()
+# Test Dixona
+is_outlier_dixon = dixon_test(sample)
+print("Czy istnieje odstająca wartość według testu Dixona:", is_outlier_dixon)
+
+# Test Grubbsa
+is_outlier_grubbs = grubbs_test(sample)
+print("Czy istnieje odstająca wartość według testu Grubbsa:", is_outlier_grubbs)

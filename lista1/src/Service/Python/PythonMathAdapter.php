@@ -18,6 +18,7 @@ final class PythonMathAdapter
     private const SKEW = 'src/resources/python/math/skew.py';
     private const KURTOSIS = 'src/resources/python/math/kurtosis.py';
     private const STDEV = 'src/resources/python/math/stdev.py';
+    private const PPF = 'src/resources/python/math/ppf.py';
 
     public function __construct(private readonly string $projectDir)
     {
@@ -66,6 +67,11 @@ final class PythonMathAdapter
     public function stdev(array $data): array
     {
         return $this->execute(self::STDEV, json_encode($data));
+    }
+
+    public function ppf(array $data): array
+    {
+        return $this->execute(self::PPF, json_encode($data));
     }
 
     private function execute(string $path, string $json): array

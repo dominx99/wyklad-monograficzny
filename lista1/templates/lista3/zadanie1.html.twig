@@ -1,0 +1,47 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Test Dixona, Grubbsa
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Test Dixona, Grubbsa</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form">
+                    <div class="mb-2">
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label for="alpha">Alfa</label>
+                        <select id="alpha" name="alpha" class="form-control">
+                            <option value="0.01">0.01</option>
+                            <option value="0.05" selected>0.05</option>
+                            <option value="0.1">0.1</option>
+                        </select>
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6 d-none" id="result-card">
+                <div class="table-responsive" id="table"></div>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <h3>Test Dixona</h3>
+                        <div id="result-dixon" class="mb-2"></div>
+                        <h3>Test Grubbsa</h3>
+                        <div id="result-grubbs"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista3/1.js') }}"></script>
+{% endblock %}
