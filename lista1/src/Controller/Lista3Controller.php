@@ -8,6 +8,9 @@ use App\Service\DixonTest;
 use App\Service\Helpers;
 use App\Service\Python\PythonMathAdapter;
 use App\Service\Sigm3Outliers;
+use App\Service\SignTest;
+use App\Service\TurningPointsTest;
+use MathPHP\Probability\Distribution\Continuous\Normal;
 use MathPHP\Probability\Distribution\Table\ChiSquared;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Outlier;
@@ -36,6 +39,12 @@ final class Lista3Controller extends AbstractController
     public function zadanie2(): Response
     {
         return $this->render('lista3/zadanie2.html.twig');
+    }
+    #
+    #[Route(path: '/lista3/zadanie3', methods: ['GET'])]
+    public function zadanie3(): Response
+    {
+        return $this->render('lista3/zadanie3.html.twig');
     }
 
     #[Route(path: '/lista3/zadanie1/oblicz', name: 'lista3_zadanie1_oblicz')]
@@ -115,6 +124,44 @@ final class Lista3Controller extends AbstractController
             'result' => $this->render('partials/sigma3_result.html.twig', [
                 'data' => $data,
                 'results' => $results,
+            ])->getContent(),
+        ]);
+    }
+
+    #[Route(path: '/lista3/zadanie3/oblicz')]
+    public function zadanie3Oblicz(Request $request): JsonResponse
+    {
+        $body = json_decode($request->getContent(), true);
+        $data = array_map(fn ($item) => (float) $item, $body['values']);
+        $alpha = ((float) $body['alpha']);
+
+        [$n, $ms, $sigma, $s, $result, $criticalValue, $message] = SignTest::calculate($data, $alpha);
+        $signTestResult = $this->render('partials/result_list.html.twig', [
+            'results' => [
+                'n = ' => $n,
+                'S = ' => $s,
+                'm<sub>s</sub> = ' => $ms,
+                'σ<sub>S</sub> = ' => $sigma,
+                '|S - m<sub>s</sub>| / σ<sub>s</sub> = ' => $result,
+                'Wartość krytyczna = ' => $criticalValue,
+                'Wniosek: ' => $message,
+            ]
+        ])->getContent();
+
+        [$n, $mt, $sigma, $t, $result, $criticalValue, $message] = TurningPointsTest::calculate($data, $alpha);
+
+        return new JsonResponse([
+            'sign_result' => $signTestResult,
+            'turning_points_result' => $this->render('partials/result_list.html.twig', [
+                'results' => [
+                    'n = ' => $n,
+                    'T = ' => $t,
+                    'm<sub>T</sub> = ' => $mt,
+                    'σ<sub>T</sub> = ' => $sigma,
+                    '|T - m<sub>s</sub>| / σ<sub>s</sub> = ' => $result,
+                    'Wartość krytyczna = ' => $criticalValue,
+                    'Wniosek: ' => $message,
+                ]
             ])->getContent(),
         ]);
     }

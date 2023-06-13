@@ -1,24 +1,19 @@
-import numpy as np
+def calculate_variance(time_series):
+    n = len(time_series)
+    squared_diffs = []
 
-data = [1.3, 2.1, 2.7, 3.3, 3.5, 4.5, 4.7]
-data = sorted(data)
+    for i in range(1, n):
+        diff = time_series[i] - time_series[i - 1]
+        squared_diffs.append(diff ** 2)
 
-# Obliczanie średniej
-mean = np.mean(data)
+    sum_squared_diffs = sum(squared_diffs)
+    variance = sum_squared_diffs / (n - 1)
 
-# Obliczanie odchylenia standardowego
-std = np.std(data)
+    return variance
 
-# Obliczanie granic odstępstwa
-lower_bound = mean - 3 * std
-upper_bound = mean + 3 * std
+# Example time series
+time_series = [11.4, -4.4, 17.7, -7.1, -17.4, -1.4, 14.8, 8.9, -2.5, 6.9, -12.6, -21.4, 7.6, 16.9, 13.4, -30.5, 39.9, -34.7, -21.5, -17.0, 22.1, 11.4]
 
-# Znajdowanie pomiary odstające
-outliers = [x for x in data if x < lower_bound or x > upper_bound]
+variance = calculate_variance(time_series)
 
-print("Średnia: ", mean)
-print("Odchylenie standardowe: ", std)
-print("Dolna granica odstępstwa: ", lower_bound)
-print("Górna granica odstępstwa: ", upper_bound)
-print("Pomiary odstające:")
-print(outliers)
+print("Variance:", variance)

@@ -1,0 +1,43 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Test znaków oraz test punktów zwrotnych
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <a class="btn btn-outline-primary mb-5" href="/">Wróć</a>
+        <h2>Test znaków oraz test punktów zwrotnych</h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <form id="form">
+                    <div class="mb-2">
+                        <label for="input">Dane wejściowe</label>
+                        <textarea rows="10" class="form-control" id="input" placeholder="Dane wejściowe">
+                        </textarea>
+                    </div>
+                    <div>
+                        <label for="alpha">Alfa</label>
+                        <input id="alpha" type="number" class="form-control" placeholder="Przykładowe wartości: 0.1, 0.05, 0.01" value="0.05">
+                    </div>
+
+                    <button id="submit-button" class="btn btn-primary mt-3" type="button">Oblicz</button>
+                </form>
+            </div>
+            <div class="col-md-6 d-none" id="result-card">
+                <div class="table-responsive" id="table"></div>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <h3>Test znaków</h3>
+                        <div id="result-sign" class="mb-2"></div>
+                        <h3>Test punktów zwrotnych</h3>
+                        <div id="result-turning_points" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/lista3/3.js') }}"></script>
+{% endblock %}
