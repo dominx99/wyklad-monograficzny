@@ -174,7 +174,7 @@ final class Lista2Controller extends AbstractController
         }
 
         foreach ($histogramClone as $key => $value) {
-            if ($key === 0) {
+            if ($key === 0 && !$mergeBoundaries) {
                 $value = $this->normalDistributionCalculator->calculateProbability(
                     $mean,
                     $stdev,
