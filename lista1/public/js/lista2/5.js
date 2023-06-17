@@ -32,7 +32,7 @@ function setResult(data) {
 
 function fillInput() {
     var input = document.getElementById('input');
-    input.value = "216 663 74 42 65 134 202 683 601 82 247 367 417 518";
+    input.value = "6.5 10.0 24.7 17.4 14.4 -5.2 -14.1 10.4 24.0 17.0 -26.6 18.1 -15.2";
 }
 
 function onLoad() {
