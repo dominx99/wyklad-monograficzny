@@ -174,15 +174,26 @@ final class Lista2Controller extends AbstractController
         }
 
         foreach ($histogramClone as $key => $value) {
-            $value = $this->normalDistributionCalculator->calculateProbability(
-                $this->pythonMathAdapter->mean($data)['mean'],
-                $this->pythonMathAdapter->stdev($data)['stdev'],
-                'between',
-                [
-                    $value['rangeStart'],
-                    $value['rangeEnd'],
-                ]
-            );
+            if ($key === 0) {
+                $value = $this->normalDistributionCalculator->calculateProbability(
+                    $mean,
+                    $stdev,
+                    'less',
+                    [
+                        $value['rangeEnd']
+                    ]
+                );
+            } else {
+                $value = $this->normalDistributionCalculator->calculateProbability(
+                    $this->pythonMathAdapter->mean($data)['mean'],
+                    $this->pythonMathAdapter->stdev($data)['stdev'],
+                    'between',
+                    [
+                        $value['rangeStart'],
+                        $value['rangeEnd'],
+                    ]
+                );
+            }
             $pValues[] = [
                 'value' => $value,
                 'count' => $histogramClone[$key]['binCount'],
